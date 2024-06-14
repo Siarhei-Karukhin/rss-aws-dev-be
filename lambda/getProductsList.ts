@@ -2,6 +2,7 @@ import { mockProducts } from './mockData';
 
 const headers = {
   "Content-Type": "text/plain",
+  "Access-Control-Allow-Origin" : "*",
 };
 
 export const handler = async (event: any) => {
