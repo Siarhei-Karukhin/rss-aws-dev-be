@@ -9,21 +9,17 @@ export class RssAwsDeveloperBeStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // Define the Lambda function resource
-    const productsFunction = new lambda.Function(this, 'ProductsFunction', {
-      runtime: lambda.Runtime.NODEJS_20_X, // Choose any supported Node.js runtime
-      code: lambda.Code.fromAsset('lambda'), // Points to the lambda directory
-      handler: 'getProductsList.handler', // Points to the 'getProductsList' file in the lambda directory
+    const getProductsListLambda = new lambda.Function(this, 'ProductsFunction', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'getProductsList.handler',
     });
-
-    // Define the API Gateway resource
-    const api = new apigateway.LambdaRestApi(this, 'ProductsApi', {
-      handler: productsFunction,
+    const getProductsListAPIGateway = new apigateway.LambdaRestApi(this, 'ProductsApi', {
+      handler: getProductsListLambda,
       proxy: false,
     });
-
-    // Define the '/products' resource with a GET method
-    const productsResource = api.root.addResource('products');
-    productsResource.addMethod('GET');
+    getProductsListAPIGateway.root
+      .addResource('products')
+      .addMethod('GET');
   }
 }
