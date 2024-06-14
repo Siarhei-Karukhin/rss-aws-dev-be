@@ -13,7 +13,7 @@ export class RssAwsDeveloperBeStack extends cdk.Stack {
     const productsFunction = new lambda.Function(this, 'ProductsFunction', {
       runtime: lambda.Runtime.NODEJS_20_X, // Choose any supported Node.js runtime
       code: lambda.Code.fromAsset('lambda'), // Points to the lambda directory
-      handler: 'products.handler', // Points to the 'products' file in the lambda directory
+      handler: 'getProductsList.handler', // Points to the 'getProductsList' file in the lambda directory
     });
 
     // Define the API Gateway resource
