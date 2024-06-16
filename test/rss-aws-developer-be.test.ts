@@ -1,17 +1,22 @@
-// import * as cdk from 'aws-cdk-lib';
-// import { Template } from 'aws-cdk-lib/assertions';
-// import * as RssAwsDeveloperBe from '../lib/rss-aws-developer-be-stack';
+import { handler as getProductsList } from '../lambda/getProductsList';
+import { handler as getProductsById } from '../lambda/getProductsById';
 
-// example test. To run these tests, uncomment this file along with the
-// example resource in lib/rss-aws-developer-be-stack.ts
-test('SQS Queue Created', () => {
-//   const app = new cdk.App();
-//     // WHEN
-//   const stack = new RssAwsDeveloperBe.RssAwsDeveloperBeStack(app, 'MyTestStack');
-//     // THEN
-//   const template = Template.fromStack(stack);
+describe('Products service', () => {
+  it('should return 200 statusCode for getProductsList', async () => {
+    const response = await getProductsList({});
 
-//   template.hasResourceProperties('AWS::SQS::Queue', {
-//     VisibilityTimeout: 300
-//   });
+    expect(response.statusCode).toEqual(200);
+  });
+
+  it('should return 200 statusCode for getProductsById', async () => {
+    const response = await getProductsById({ pathParameters: { productId: '3' } });
+
+    expect(response.statusCode).toEqual(200);
+  });
+
+  it('should return 404 statusCode for getProductsById', async () => {
+    const response = await getProductsById({ pathParameters: { productId: '4' } });
+
+    expect(response.statusCode).toEqual(404);
+  });
 });
