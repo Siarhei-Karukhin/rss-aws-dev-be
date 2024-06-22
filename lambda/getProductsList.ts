@@ -11,12 +11,18 @@ const documentClient = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event: any) => {
   try {
-    const data = await documentClient.send(new ScanCommand({ TableName: process.env.PRODUCTS_TABLE }));
+    const { Items: products } = await documentClient.send(new ScanCommand({ TableName: process.env.PRODUCTS_TABLE }));
+    const { Items: stocks } = await documentClient.send(new ScanCommand({ TableName: process.env.STOCKS_TABLE }));
+
+    const productsWithStocks = products?.map((product) => ({
+      ...product,
+      count: stocks?.find(({ product_id }) => product_id === product.id)?.count,
+    }));
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(data.Items),
+      body: JSON.stringify(productsWithStocks),
     };
   } catch (error) {
     console.error(error);
