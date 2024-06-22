@@ -1,16 +1,22 @@
-import { mockProducts } from './mockData';
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient, ScanCommand } from '@aws-sdk/lib-dynamodb';
 
 const headers = {
-  "Content-Type": "text/plain",
+  "Content-Type": "application/json",
   "Access-Control-Allow-Origin" : "*",
 };
 
+const client = new DynamoDBClient({});
+const documentClient = DynamoDBDocumentClient.from(client);
+
 export const handler = async (event: any) => {
   try {
+    const data = await documentClient.send(new ScanCommand({ TableName: process.env.PRODUCTS_TABLE }));
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(mockProducts),
+      body: JSON.stringify(data.Items),
     };
   } catch (error) {
     console.error(error);
