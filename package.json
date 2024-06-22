@@ -8,7 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "seed": "aws lambda invoke --profile rss --function-name RssAwsDeveloperBeStack-FillTablesLambda4647CC7C-bFrvnAwIDLzI NUL"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",

@@ -55,6 +55,19 @@ export class RssAwsDeveloperBeStack extends cdk.Stack {
 
     productsTable.grantReadWriteData(createProductLambda);
 
+    const fillTablesLambda = new lambda.Function(this, 'FillTablesLambda', {
+      runtime: lambda.Runtime.NODEJS_20_X,
+      code: lambda.Code.fromAsset('lambda'),
+      handler: 'fillTables.handler',
+      environment: {
+        PRODUCTS_TABLE: productsTable.tableName,
+        STOCKS_TABLE: stocksTable.tableName,
+      }
+    });
+
+    productsTable.grantReadWriteData(fillTablesLambda);
+    stocksTable.grantReadWriteData(fillTablesLambda);
+
     const api = new apigateway.RestApi(this, 'ProductsApi');
 
     const getProductsListAPI = api.root.addResource('products');
