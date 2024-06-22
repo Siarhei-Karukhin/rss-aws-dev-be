@@ -10,6 +10,8 @@ const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event: any) => {
+  console.log('event: ', event);
+  
   try {
     const { Items: products } = await documentClient.send(new ScanCommand({ TableName: process.env.PRODUCTS_TABLE }));
     const { Items: stocks } = await documentClient.send(new ScanCommand({ TableName: process.env.STOCKS_TABLE }));

@@ -11,6 +11,8 @@ const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event: any) => {
+  console.log('event: ', event);
+  
   try {
     const body = JSON.parse(event.body);
 

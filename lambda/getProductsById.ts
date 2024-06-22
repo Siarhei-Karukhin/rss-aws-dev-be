@@ -10,6 +10,8 @@ const client = new DynamoDBClient({});
 const documentClient = DynamoDBDocumentClient.from(client);
 
 export const handler = async (event: any) => {
+  console.log('event: ', event);
+
   try {
     const productsTableParams = {
       TableName: process.env.PRODUCTS_TABLE,
