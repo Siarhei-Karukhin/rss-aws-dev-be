@@ -1,13 +1,23 @@
-import { mockProducts } from './mockData';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient, GetCommand } from "@aws-sdk/lib-dynamodb";
 
 const headers = {
-  "Content-Type": "text/plain",
+  "Content-Type": "application/json",
   "Access-Control-Allow-Origin" : "*",
 };
 
+const client = new DynamoDBClient({});
+const documentClient = DynamoDBDocumentClient.from(client);
+
 export const handler = async (event: any) => {
   try {
-    const product = mockProducts.find(({ id }) => id === event.pathParameters.productId);
+    const productsTableParams = {
+      TableName: process.env.PRODUCTS_TABLE,
+      Key: {
+        id: event.pathParameters.productId,
+      },
+    };
+    const { Item: product } = await documentClient.send(new GetCommand(productsTableParams));
 
     if (!product) {
       return {
@@ -17,10 +27,20 @@ export const handler = async (event: any) => {
       };
     }
 
+    const stocksTableParams = {
+      TableName: process.env.STOCKS_TABLE,
+      Key: {
+        product_id: event.pathParameters.productId,
+      },
+    };
+    const { Item: stock } = await documentClient.send(new GetCommand(stocksTableParams));
+
+    const productWithStock = { ...product, count: stock?.count ?? 0 };
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(product),
+      body: JSON.stringify(productWithStock),
     };
   } catch (error) {
     console.error(error);
