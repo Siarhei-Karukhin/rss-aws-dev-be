@@ -50,10 +50,12 @@ export class RssAwsDeveloperBeStack extends cdk.Stack {
       handler: 'createProduct.handler',
       environment: {
         PRODUCTS_TABLE: productsTable.tableName,
+        STOCKS_TABLE: stocksTable.tableName,
       }
     });
 
     productsTable.grantReadWriteData(createProductLambda);
+    stocksTable.grantReadWriteData(createProductLambda);
 
     const fillTablesLambda = new lambda.Function(this, 'FillTablesLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,

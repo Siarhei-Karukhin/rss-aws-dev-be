@@ -35,7 +35,7 @@ export const handler = async (event: any) => {
     };
     const { Item: stock } = await documentClient.send(new GetCommand(stocksTableParams));
 
-    const productWithStock = { ...product, count: stock?.count ?? 0 };
+    const productWithStock = { ...product, count: stock?.count };
 
     return {
       statusCode: 200,

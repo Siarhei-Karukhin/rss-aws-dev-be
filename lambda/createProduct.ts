@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from 'uuid';
 
 const headers = {
@@ -23,19 +23,26 @@ export const handler = async (event: any) => {
       price: body?.price,
     };
 
-    await documentClient.send(new PutCommand({
-      TableName: process.env.PRODUCTS_TABLE,
-      Item: newProduct,
-    }));
-
     const newStock = {
       product_id: id,
       count: body?.count,
     };
 
-    await documentClient.send(new PutCommand({
-      TableName: process.env.STOCKS_TABLE,
-      Item: newStock,
+    await documentClient.send(new TransactWriteCommand({
+      TransactItems: [
+        {
+          Put: {
+            TableName: process.env.PRODUCTS_TABLE,
+            Item: newProduct
+          }
+        },
+        {
+          Put: {
+            TableName: process.env.STOCKS_TABLE,
+            Item: newStock
+          }
+        }
+      ]
     }));
 
     const productWithStock = {

@@ -16,7 +16,7 @@ export const handler = async (event: any) => {
 
     const productsWithStocks = products?.map((product) => ({
       ...product,
-      count: stocks?.find(({ product_id }) => product_id === product.id)?.count ?? 0,
+      count: stocks?.find(({ product_id }) => product_id === product.id)?.count,
     }));
 
     return {
