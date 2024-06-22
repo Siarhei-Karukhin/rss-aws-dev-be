@@ -2,6 +2,12 @@ import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient, TransactWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from 'uuid';
 
+const isValidBody = (body: any) =>
+  typeof body?.title === 'string' &&
+  typeof body?.description === 'string' &&
+  typeof body?.price === 'number' &&
+  typeof body?.count === 'number';
+
 const headers = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin" : "*",
@@ -15,6 +21,14 @@ export const handler = async (event: any) => {
   
   try {
     const body = JSON.parse(event.body);
+
+    if (!isValidBody(body)) {
+      return {
+        statusCode: 400,
+        headers,
+        body: 'Validation Error',
+      };
+    }
 
     const id = uuidv4();
 
