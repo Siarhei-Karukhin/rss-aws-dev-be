@@ -14,8 +14,10 @@ export const handler = async (event: any) => {
   try {
     const body = JSON.parse(event.body);
 
+    const id = uuidv4();
+
     const newProduct = {
-      id: uuidv4(),
+      id,
       title: body?.title,
       description: body?.description,
       price: body?.price,
@@ -26,10 +28,25 @@ export const handler = async (event: any) => {
       Item: newProduct,
     }));
 
+    const newStock = {
+      product_id: id,
+      count: body?.count,
+    };
+
+    await documentClient.send(new PutCommand({
+      TableName: process.env.STOCKS_TABLE,
+      Item: newStock,
+    }));
+
+    const productWithStock = {
+      ...newProduct,
+      count: newStock?.count,
+    };
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(newProduct),
+      body: JSON.stringify(productWithStock),
     };
   } catch (error) {
     console.error(error);
