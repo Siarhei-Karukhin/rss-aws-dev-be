@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { RssAwsDeveloperBeStack } from '../lib/rss-aws-developer-be-stack';
+import { RssAwsDeveloperBeStack } from '../lib/product-service-stack';
 
 const app = new cdk.App();
 new RssAwsDeveloperBeStack(app, 'RssAwsDeveloperBeStack', {
